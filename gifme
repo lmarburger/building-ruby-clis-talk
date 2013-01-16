@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
-args = %w(convert -delay 1
-                  -loop 0
-                  -layers OptimizeTransparency
-                  ~/Desktop/turkey/* out.gif)
-system *args
+command = %W(convert -delay 1
+                     -loop 0
+                     -layers OptimizeTransparency)
+command += ARGV
+command << 'out.gif'
+
+system *command
