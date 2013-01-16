@@ -14,6 +14,10 @@ def error(message)
   exit 1
 end
 
+def images
+  @images ||= $stdin.tty? ? ARGV : $stdin.read.split("\n")
+end
+
 require 'optparse'
 
 options = { output:  'out.gif',
@@ -55,7 +59,7 @@ parser = OptionParser.new do |opts|
 end
 
 parser.parse! ARGV
-error 'No images to gif!' if ARGV.empty?
+error 'No images to gif!' if images.empty?
 
 delay   = options[:delay]
 reverse = options[:reverse]
@@ -63,8 +67,8 @@ output  = options[:output]
 command = %W(convert -delay #{delay}
                      -loop 0
                      -layers OptimizeTransparency)
-command += ARGV
-command += ARGV.reverse[1..-2] if reverse
+command += images
+command += images.reverse[1..-2] if reverse
 command << output
 
 require 'open3'
