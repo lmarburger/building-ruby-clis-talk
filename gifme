@@ -1,27 +1,54 @@
 #!/usr/bin/env ruby
 
-# --delay=N
-delay_index = ARGV.index {|arg| arg =~ /--delay=(?<value>.*)/ }
-delay       = Regexp.last_match(:value) || '1'
-ARGV.slice!(delay_index) if delay_index
-unless delay =~ /\A\d+\Z/
-  puts 'Delay must be a number.'
-  exit
+require 'optparse'
+
+options = { output:  'out.gif',
+            delay:   20,
+            reverse: false }
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: gifme [options] FILES"
+
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on('-d N', '--delay=N', Integer,
+          'Set the delay between frames (default: 20)') do |delay|
+    options[:delay] = delay
+  end
+
+  opts.on('--output=FILE',
+          'Path of the generated gif (default: out.gif)') do |output|
+    options[:output] = output
+  end
+
+  opts.on('--[no-]reverse',
+          'Reverse frames to make gif loopable') do |reverse|
+    options[:reverse] = reverse
+  end
+
+  opts.on_tail('-h', '--help',
+               'Show this message') do
+    puts opts
+    exit
+  end
+
+  opts.on_tail('--version',
+               'Show version') do
+    puts '0.0.1'
+    exit
+  end
 end
 
-# --output=out.gif
-output_index = ARGV.index {|arg| arg =~ /--output=(?<value>.*)/ }
-output       = (output_index && Regexp.last_match(:value)) || 'out.gif'
-ARGV.slice!(output_index) if output_index
-
-# --reverse
-reverse = ARGV.delete('--reverse')
-
+parser.parse! ARGV
 if ARGV.empty?
   puts 'No images to gif!'
   exit
 end
 
+delay   = options[:delay]
+reverse = options[:reverse]
+output  = options[:output]
 command = %W(convert -delay #{delay}
                      -loop 0
                      -layers OptimizeTransparency)
