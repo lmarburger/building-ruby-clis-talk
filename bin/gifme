@@ -5,7 +5,8 @@ trap('SIGINT') do
 end
 
 def info(message)
-  $stdout.puts message
+  io = $stdout.tty? ? $stdout : $stderr
+  io.puts message
 end
 
 def error(message)
@@ -70,6 +71,7 @@ require 'open3'
 stdout, stderr, status = Open3.capture3(*command)
 if status.success?
   info "Success! Your handsome gif is living at #{File.expand_path(output)}."
+  $stdout.puts File.expand_path(output) unless $stdout.tty?
 else
   message = "Something went horribly wrong. :("
   unless stderr.empty?
