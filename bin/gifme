@@ -1,8 +1,16 @@
 #!/usr/bin/env ruby
 
 trap('SIGINT') do
-  puts 'Stopping'
-  exit
+  error 'Stopping'
+end
+
+def info(message)
+  $stdout.puts message
+end
+
+def error(message)
+  $stderr.puts message
+  exit 1
 end
 
 require 'optparse'
@@ -34,22 +42,19 @@ parser = OptionParser.new do |opts|
 
   opts.on_tail('-h', '--help',
                'Show this message') do
-    puts opts
+    info opts
     exit
   end
 
   opts.on_tail('--version',
                'Show version') do
-    puts '0.0.1'
+    info '0.0.1'
     exit
   end
 end
 
 parser.parse! ARGV
-if ARGV.empty?
-  puts 'No images to gif!'
-  exit
-end
+error 'No images to gif!' if ARGV.empty?
 
 delay   = options[:delay]
 reverse = options[:reverse]
@@ -64,13 +69,12 @@ command << output
 require 'open3'
 stdout, stderr, status = Open3.capture3(*command)
 if status.success?
-  puts "Success! Your handsome gif is living at #{File.expand_path(output)}."
+  info "Success! Your handsome gif is living at #{File.expand_path(output)}."
 else
   message = "Something went horribly wrong. :("
   unless stderr.empty?
     message += "\n\nMessage from ImageMagick:\n"
     message += stderr.split("\n").map {|line| '  ' + line }.join("\n")
   end
-  puts message
-  exit
+  error message
 end
