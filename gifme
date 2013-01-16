@@ -29,8 +29,16 @@ command += ARGV
 command += ARGV.reverse[1..-2] if reverse
 command << output
 
-if system *command
+require 'open3'
+stdout, stderr, status = Open3.capture3(*command)
+if status.success?
   puts "Success! Your handsome gif is living at #{File.expand_path(output)}."
 else
-  puts 'Something went horribly wrong. :('
+  message = "Something went horribly wrong. :("
+  unless stderr.empty?
+    message += "\n\nMessage from ImageMagick:\n"
+    message += stderr.split("\n").map {|line| '  ' + line }.join("\n")
+  end
+  puts message
+  exit
 end
