@@ -4,6 +4,10 @@
 delay_index = ARGV.index {|arg| arg =~ /--delay=(?<value>.*)/ }
 delay       = Regexp.last_match(:value) || '1'
 ARGV.slice!(delay_index) if delay_index
+unless delay =~ /\A\d+\Z/
+  puts 'Delay must be a number.'
+  exit
+end
 
 # --output=out.gif
 output_index = ARGV.index {|arg| arg =~ /--output=(?<value>.*)/ }
@@ -13,6 +17,11 @@ ARGV.slice!(output_index) if output_index
 # --reverse
 reverse = ARGV.delete('--reverse')
 
+if ARGV.empty?
+  puts 'No images to gif!'
+  exit
+end
+
 command = %W(convert -delay #{delay}
                      -loop 0
                      -layers OptimizeTransparency)
@@ -20,4 +29,8 @@ command += ARGV
 command += ARGV.reverse[1..-2] if reverse
 command << output
 
-system *command
+if system *command
+  puts "Success! Your handsome gif is living at #{File.expand_path(output)}."
+else
+  puts 'Something went horribly wrong. :('
+end
