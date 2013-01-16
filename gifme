@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+trap('SIGINT') do
+  puts 'Stopping'
+  exit
+end
+
 require 'optparse'
 
 options = { output:  'out.gif',
