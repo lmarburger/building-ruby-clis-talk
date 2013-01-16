@@ -10,10 +10,14 @@ output_index = ARGV.index {|arg| arg =~ /--output=(?<value>.*)/ }
 output       = (output_index && Regexp.last_match(:value)) || 'out.gif'
 ARGV.slice!(output_index) if output_index
 
+# --reverse
+reverse = ARGV.delete('--reverse')
+
 command = %W(convert -delay #{delay}
                      -loop 0
                      -layers OptimizeTransparency)
 command += ARGV
+command += ARGV.reverse[1..-2] if reverse
 command << output
 
 system *command
