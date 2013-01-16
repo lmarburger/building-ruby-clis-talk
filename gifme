@@ -1,9 +1,19 @@
 #!/usr/bin/env ruby
 
-command = %W(convert -delay 1
+# --delay=N
+delay_index = ARGV.index {|arg| arg =~ /--delay=(?<value>.*)/ }
+delay       = Regexp.last_match(:value) || '1'
+ARGV.slice!(delay_index) if delay_index
+
+# --output=out.gif
+output_index = ARGV.index {|arg| arg =~ /--output=(?<value>.*)/ }
+output       = (output_index && Regexp.last_match(:value)) || 'out.gif'
+ARGV.slice!(output_index) if output_index
+
+command = %W(convert -delay #{delay}
                      -loop 0
                      -layers OptimizeTransparency)
 command += ARGV
-command << 'out.gif'
+command << output
 
 system *command
