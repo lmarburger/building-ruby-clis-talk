@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ronn --style=toc man/gifme.1.ronn && man man/gifme.1

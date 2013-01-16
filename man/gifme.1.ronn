@@ -1,0 +1,50 @@
+gifme(1) -- animations
+======================
+
+## SYNOPSIS
+
+`gifme` [`--delay=N`] [`--output=FILE`] [`--[no-]reverse`] FILE [FILE...]
+
+## DESCRIPTION
+
+Create animated gifs!
+
+## OPTIONS
+
+  - `-d`, `--delay=N`:
+    Set the delay between frames (default: 20)
+
+  - `--output=FILE`:
+    Path of the generated gif (default: out.gif)
+
+  - `--[no-]reverse`:
+    Reverse frames to make gif loopable.
+
+  - `-h`, `--help`:
+    Print a help message describing gifme's usage.
+
+  - `--version`:
+    Display the version of gifme.
+
+## EXAMPLE
+
+Create a gif:
+
+    $ gifme 1.png 2.png
+    Success! Your handsome gif is living at /out.gif.
+
+Create a looping gif:
+
+    $ gifme --reverse 1.png 2.png
+    Success! Your handsome gif is living at /out.gif.
+
+Pipe in a list of files:
+
+    $ ls *.png | gifme
+    Success! Your handsome gif is living at /out.gif.
+
+Pipe the path to the gif to another program:
+
+    $ gifme 1.png 2.png | cloudapp
+    Success! Your handsome gif is living at /out.gif.
+    Uploading out.gif... http://cl.ly/image/1x2f3526230i

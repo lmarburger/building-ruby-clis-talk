@@ -15,8 +15,11 @@ Gem::Specification.new do |spec|
   spec.homepage    = 'https://github.com/holman/gifme'
   spec.license     = 'MIT'
 
+  spec.add_development_dependency 'ronn'
+
   spec.files = %w(Gemfile Rakefile)
   spec.files << "#{lib}.gemspec"
+  spec.files += Dir.glob("man/*")
   spec.files += Dir.glob("lib/**/*.rb")
   spec.files += Dir.glob("spec/**/*.rb")
 
